@@ -10,6 +10,12 @@ project(exiv2          # use TWEAK to categorize the build
                        # 0.27.5.39 = RC2 Development
     LANGUAGES CXX
 )
+
+# nomacs config
+SET(ZLIB_LIBRARY_DEBUG "${ZLIB_BUILD_PATH}/lib/Debug/zlibd.lib")
+SET(ZLIB_LIBRARY_RELEASE "${ZLIB_BUILD_PATH}/lib/Release/zlib.lib")
+SET(EXPAT_LIBRARY "${EXPAT_BUILD_PATH}/Release/expat.lib")
+
 include(cmake/mainSetup.cmake  REQUIRED)
 
 # options and their default values
@@ -157,6 +163,13 @@ install( FILES ${PROJECT_SOURCE_DIR}/man/man1/exiv2.1 DESTINATION ${CMAKE_INSTAL
 
 
 include(cmake/printSummary.cmake)
+
+# diem: create config
+set(EXIV2_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/include ${CMAKE_BINARY_DIR})
+set(EXIV2_LIBS optimized ${CMAKE_BINARY_DIR}/lib/Release/exiv2.lib debug ${CMAKE_BINARY_DIR}/lib/Debug/exiv2.lib)
+set(EXIV2_BINARY_DIR ${CMAKE_BINARY_DIR}/src/)
+set(EXPAT_BINARY_DIR optimized ${CMAKE_BINARY_DIR}/bin)
+configure_file(${CMAKE_SOURCE_DIR}/exiv2.cmake.in ${CMAKE_BINARY_DIR}/exiv2Config.cmake)
 
 # That's all Folks!
 ##

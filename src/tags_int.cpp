@@ -252,6 +252,7 @@ namespace Exiv2 {
         {     9, N_("JBIG B&W")                 },
         {    10, N_("JBIG Color")               },
         { 32766, N_("Next 2-bits RLE")          },
+        { 32767, N_("Sony ARW Compressed")      },
         { 32769, N_("Epson ERF Compressed")     },
         { 32770, N_("Samsung SRW Compressed")   },
         { 32771, N_("CCITT RLE 1-word")         },
@@ -536,7 +537,7 @@ namespace Exiv2 {
                 N_("The logical order of bits within a byte"),
                 ifd0Id, imgStruct, unsignedShort, 1, printValue), // TIFF tag
         TagInfo(0x010d, "DocumentName", N_("Document Name"),
-                N_("The name of the document from which this image was scanned"),
+                N_("The name of the document from which this image was scanned."),
                 ifd0Id, imgStruct, asciiString, 0, printValue), // TIFF tag
         TagInfo(0x010e, "ImageDescription", N_("Image Description"),
                 N_("A character string giving the title of the image. It may be "
@@ -596,6 +597,19 @@ namespace Exiv2 {
                 "is used instead of this tag. If this field does not exist, "
                 "the TIFF default of 1 (chunky) is assumed."),
                 ifd0Id, imgStruct, unsignedShort, 1, EXV_PRINT_TAG(exifPlanarConfiguration)),
+        TagInfo(0x011d, "PageName", N_("Page Name"),
+                 N_("The name of the page from which this image was scanned."),
+                 ifd0Id, imgStruct, asciiString, 0, printValue), // TIFF tag
+        TagInfo(0x011e, "XPosition", N_("X Position"),
+                 N_("X position of the image. The X offset in ResolutionUnits of the "
+                 "left side of the image, with respect to the left side of the page."),
+                 ifd0Id, imgStruct, unsignedRational, 1, printValue), // TIFF tag
+        TagInfo(0x011f, "YPosition", N_("Y Position"),
+                 N_("Y position of the image. The Y offset in ResolutionUnits of the "
+                 "top of the image, with respect to the top of the page. In the TIFF "
+                 "coordinate scheme, the positive Y direction is down, so that "
+                 "YPosition is always positive."),
+                 ifd0Id, imgStruct, unsignedRational, 1, printValue), // TIFF tag
         TagInfo(0x0122, "GrayResponseUnit", N_("Gray Response Unit"),
                 N_("The precision of the information contained in the GrayResponseCurve."),
                 ifd0Id, imgStruct, unsignedShort, 1, printValue), // TIFF tag
@@ -960,6 +974,8 @@ namespace Exiv2 {
         TagInfo(0xc4a5, "PrintImageMatching", N_("Print Image Matching"),
                 N_("Print Image Matching, description needed."),
                 ifd0Id, otherTags, undefined, -1, printValue),
+        ////////////////////////////////////////
+        // https://wwwimages.adobe.com/content/dam/Adobe/en/products/photoshop/pdfs/dng_spec_1.5.0.0.pdf
         TagInfo(0xc612, "DNGVersion", N_("DNG version"),
                 N_("This tag encodes the DNG four-tier version number. For files "
                    "compliant with version 1.1.0.0 of the DNG specification, this "
@@ -1495,9 +1511,8 @@ namespace Exiv2 {
                 "independent, ignoring fixed pattern effects and other sources of noise (e.g., "
                 "pixel response non-uniformity, spatially-dependent thermal effects, etc.)."),
                 ifd0Id, dngTags, tiffDouble, -1, printValue), // DNG tag
-
         ////////////////////////////////////////
-        // http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/cinemadng/pdfs/CinemaDNG_Format_Specification_v1_1.pdf
+        // https://www.adobe.com/content/dam/acom/en/devnet/CinemaDNG/pdf/CinemaDNG_Format_Specification_v1_1.pdf
         TagInfo(0xc763, "TimeCodes", N_("TimeCodes"),
                 N_("The optional TimeCodes tag shall contain an ordered array of time codes. "
                 "All time codes shall be 8 bytes long and in binary format. The tag may "
@@ -1623,6 +1638,8 @@ namespace Exiv2 {
         TagInfo(0xc7ee, "EnhanceParams", N_("Enhance Params"),
                 N_("A string that documents how the enhanced image data was processed."),
                 ifd0Id, dngTags, asciiString, 0, printValue), // DNG 1.5 tag
+        ////////////////////////////////////////
+        // https://helpx.adobe.com/photoshop/kb/dng-specification-tags.html
         TagInfo(0xcd2d, "ProfileGainTableMap", N_("Profile Gain Table Map"),
                 N_("Contains spatially varying gain tables that can be applied while processing the "
                 "image as a starting point for user adjustments."),
@@ -1681,6 +1698,10 @@ namespace Exiv2 {
                 "for the third illuminant. Otherwise, this tag is ignored. The "
                 "format of the data is the same as IlluminantData1."),
                 ifd0Id, dngTags, undefined, -1, printValue), // DNG 1.6 tag
+        TagInfo(0xcd38, "MaskSubArea", N_("Mask Subarea"),
+                N_("This tag identifies the crop rectangle of this IFD's mask, "
+                "relative to the main image."),
+                ifd0Id, dngTags, unsignedLong, 4, printValue), // DNG 1.6 tag
         TagInfo(0xcd39, "ProfileHueSatMapData3", N_("Profile Hue Sat Map Data 3"),
                 N_("This tag contains the data for the third hue/saturation/value mapping "
                 "table. Each entry of the table contains three 32-bit IEEE floating-point "
@@ -1698,6 +1719,14 @@ namespace Exiv2 {
                 "used if ColorPlanes is greater than 3. The matrix is stored in row "
                 "scan order."),
                 ifd0Id, dngTags, signedRational, -1, printValue), // DNG 1.6 tag
+        TagInfo(0xcd3b, "RGBTables", N_("RGB Tables"),
+                N_("This tag specifies color transforms that can be applied to masked image "
+                "regions. Color transforms are specified using RGB-to-RGB color lookup tables. "
+                "These tables are associated with Semantic Masks to limit the color transform "
+                "to a sub-region of the image. The overall color transform is a linear "
+                "combination of the color tables, weighted by their corresponding Semantic "
+                "Masks."),
+                ifd0Id, dngTags, undefined, -1, printValue), // DNG 1.6 tag
 
         ////////////////////////////////////////
         // End of list marker

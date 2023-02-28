@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH EXIV2 1 "August 10, 2021"
+.TH EXIV2 1 "November 02, 2022"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -53,6 +53,7 @@ HEIC	Read	Read	Read	-	-
 HEIF	Read	Read	Read	-	-
 JP2	Read/Write	Read/Write	Read/Write	-	Read/Write
 JPEG	Read/Write	Read/Write	Read/Write	Read/Write	Read/Write
+JPEG XL	Read	Read	Read	-	-
 MRW	Read	Read	Read	-	-
 NEF	Read/Write	Read/Write	Read/Write	-	Read/Write
 ORF	Read/Write	Read/Write	Read/Write	-	-
@@ -76,6 +77,19 @@ image are determined.
 .IP \(bu 2
 Reading other TIFF-like RAW image formats, which are not listed in the
 table, may also work.
+.IP \(bu 2
+Support for BMFF file types such as CR3, HEIF, HEIC, AVIF, and 
+JPEG XL is a build option. To check if this is enabled, use: 
+.PP
+.in +4n
+.EX
+$ exiv2 --version --verbose | grep bmff
+enable_bmff=1
+.EE
+.in
+.PP
+.IP \(bu 2
+Naked codestream JPEG XL files do not contain Exif, IPTC, or XMP metadata.
 .SH ACTIONS
 The \fIaction\fP argument is only required if it is not clear from the
 \fIoptions\fP which action is implied.
@@ -114,7 +128,8 @@ Rename files and/or set file timestamps according to the Exif create
 timestamp. Uses the value of tag Exif.Photo.DateTimeOriginal or, if
 not present, Exif.Image.DateTime to determine the timestamp. The
 filename format can be set with \fB\-r\fP \fIfmt\fP, timestamp options
-are \fB\-t\fP and \fB\-T\fP.
+are \fB\-t\fP and \fB\-T\fP. When no rename format is provided, 
+the default is \'%Y%m%d_%H%M%S\' using definitions from \fBstrftime\fP(3).
 .TP
 .B fi | fixiso
 Copy the ISO setting from one of the proprietary Nikon or Canon
@@ -312,15 +327,17 @@ The 'extract' command will overwrite files when either --force or --Force is use
 .br
 .TP
 .B \-r \fIfmt\fP
-Filename format for the 'rename' action. The format string follows
-\fBstrftime\fP(3) and supports the following keywords:
+Filename format for the 'rename' action. The format string 
+uses \fBstrftime\fP(3) definitions and supports the following 
+keywords:
 .TS
 l l.
 :basename:	original filename without extension
 :dirname:	name of the directory holding the original file
 :parentname:	name of parent directory
 .TE
-Default filename format is %Y%m%d_%H%M%S.
+.sp 1
+Note that the colons are part of the keyword.
 .TP
 .B \-a \fItime\fP
 Time adjustment in the format [\-]HH[:MM[:SS]]. This option is only

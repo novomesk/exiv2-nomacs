@@ -13,11 +13,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: install dependencies
         run: |
-          pip3 install conan==1.39.0
+          pip3 install conan==1.53.0
 
       - name: Conan common config
         run: |
@@ -39,11 +39,9 @@ jobs:
           make -j
 
       - name: Tests + Upload coverage
-        env:
-          EXIV2_EXT: .exe
         run: |
           cd build
-          cmake --build . --target tests
+          ctest  --output-on-failure
           pip install gcovr
           gcovr -r ./../ -x --exclude-unreachable-branches --exclude-throw-branches -o coverage.xml .
           curl https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --import

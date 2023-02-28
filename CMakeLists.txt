@@ -1,15 +1,14 @@
-cmake_minimum_required( VERSION 3.3.2 )
+# Minimum version imposed by Debian:9
+cmake_minimum_required( VERSION 3.7.2 )
 
-project(exiv2          # use TWEAK to categorize the build
-    VERSION 0.27.5     # 0.27.5    = GM               (tagged and released)
-                       # 0.27.5.3  = RC3
-                       # 0.27.5.9  = 27.4.9 Development
-                       # 0.27.5.00 = GM Preview
-                       # 0.27.5.3  = RC3              (tagged and released)
-                       # 0.27.5.30 = RC2 Preview
-                       # 0.27.5.39 = RC2 Development
+project(exiv2
+    VERSION 0.27.6
     LANGUAGES CXX
 )
+
+if(NOT CMAKE_BUILD_TYPE)
+    set (CMAKE_BUILD_TYPE Release)
+endif()
 
 # nomacs config
 SET(ZLIB_LIBRARY_DEBUG "${ZLIB_BUILD_PATH}/lib/Debug/zlibd.lib")
@@ -93,16 +92,7 @@ add_subdirectory( src )
 
 if( EXIV2_BUILD_UNIT_TESTS )
     add_subdirectory ( unitTests )
-    add_custom_target(unit_test
-        COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" python3 runner.py bash_tests/unit_test.py
-        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/tests"
-    )
 endif()
-
-add_custom_target(version_test
-    COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" python3 runner.py bash_tests/version_test.py
-    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/tests"
-)
 
 if( EXIV2_BUILD_FUZZ_TESTS )
     if ((NOT COMPILER_IS_CLANG) OR (NOT EXIV2_TEAM_USE_SANITIZERS))
@@ -113,35 +103,26 @@ if( EXIV2_BUILD_FUZZ_TESTS )
 endif()
 
 if( EXIV2_BUILD_SAMPLES )
-    ##
-    # tests
-    if( EXIV2_BUILD_UNIT_TESTS )
-        add_custom_target(tests
-            COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" python3 runner.py bash_tests/unit_test.py
-            COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" python3 runner.py bash_tests/testcases.py --verbose
-            COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" python3 runner.py 
-            COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" python3 runner.py bash_tests/version_test.py
-            WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/tests"
-        )
-    else()
-        add_custom_target(tests
-            COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" python3 runner.py bash_tests/testcases.py --verbose
-            COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" python3 runner.py
-            COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" python3 runner.py bash_tests/version_test.py
-            WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/tests"
-        )
-    endif()
-    add_custom_target(python_tests
-        COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" python3 runner.py
-        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/tests"
-    )
-    add_custom_target(bash_tests
-        COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" python3 runner.py bash_tests/testcases.py --verbose
-        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/tests"
-    )
     add_subdirectory( samples )
     get_directory_property(SAMPLES DIRECTORY samples DEFINITION APPLICATIONS)
-    add_dependencies(tests exiv2lib exiv2 ${SAMPLES})
+    if (Python3_Interpreter_FOUND)
+        add_test(NAME bashTests
+            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/tests
+            COMMAND cmake -E env EXIV2_BINDIR=${CMAKE_RUNTIME_OUTPUT_DIRECTORY} ${Python3_EXECUTABLE} runner.py --verbose bash_tests
+        )
+        add_test(NAME bugfixTests
+            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/tests
+            COMMAND cmake -E env EXIV2_BINDIR=${CMAKE_RUNTIME_OUTPUT_DIRECTORY} ${Python3_EXECUTABLE} runner.py --verbose bugfixes
+        )
+        add_test(NAME tiffTests
+            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/tests
+            COMMAND cmake -E env EXIV2_BINDIR=${CMAKE_RUNTIME_OUTPUT_DIRECTORY} ${Python3_EXECUTABLE} runner.py --verbose tiff_test
+        )
+        add_test(NAME versionTests
+            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/tests
+            COMMAND cmake -E env EXIV2_BINDIR=${CMAKE_RUNTIME_OUTPUT_DIRECTORY} ${Python3_EXECUTABLE} runner.py --verbose bash_tests/version_test.py 
+        )
+    endif()
 endif()
 
 if( EXIV2_ENABLE_NLS )

@@ -593,6 +593,7 @@ namespace Exiv2 {
         TagInfo(0x002a, "VignetteControl", N_("Vignette Control"), N_("Vignette control"), nikon3Id, makerTags, unsignedShort, -1, EXV_PRINT_TAG(nikonOlnh)),
         TagInfo(0x0034, "ShutterMode", N_("Shutter Mode"), N_("Shutter mode"), nikon3Id, makerTags, unsignedShort, -1, EXV_PRINT_TAG(nikonShutterModes)),
         TagInfo(0x0037, "MechanicalShutterCount", N_("Mechanical Shutter Count"), N_("Mechanical shutter count"), nikon3Id, makerTags, unsignedLong, -1, printValue),
+        TagInfo(0x003f, "WhiteBalanceBias2", N_("White Balance Bias 2"), N_("White balance bias 2"), nikon3Id, makerTags, signedRational, -1, printValue),
         TagInfo(0x0080, "ImageAdjustment", N_("Image Adjustment"), N_("Image adjustment setting"), nikon3Id, makerTags, asciiString, -1, printValue),
         TagInfo(0x0081, "ToneComp", N_("Tone Compensation"), N_("Tone compensation"), nikon3Id, makerTags, asciiString, -1, printValue),
         TagInfo(0x0082, "AuxiliaryLens", N_("Auxiliary Lens"), N_("Auxiliary lens (adapter)"), nikon3Id, makerTags, asciiString, -1, printValue),
@@ -2101,6 +2102,7 @@ fmountlens[] = {
 {0x9F,0x58,0x44,0x44,0x14,0x14,0xA1,0x06,0x01,0x00,0x00, "Nikon", "JAA132DA", "AF-S DX Nikkor 35mm f/1.8G"},
 {0xA0,0x54,0x50,0x50,0x0C,0x0C,0xA2,0x06,0x01,0x00,0x00, "Nikon", "JAA014DA", "AF-S Nikkor 50mm f/1.4G"},
 {0xA1,0x40,0x18,0x37,0x2C,0x34,0xA3,0x06,0x01,0x00,0x00, "Nikon", "JAA804DA", "AF-S DX Nikkor 10-24mm f/3.5-4.5G ED"},
+{0xA2,0x38,0x5C,0x8E,0x34,0x40,0xCD,0x86,0x00,0x00,0x00, "Nikon", "JAA829DA", "AF-P DX Nikkor 70-300mm f/4.5-6.3G ED VR"},
 {0xA2,0x48,0x5C,0x80,0x24,0x24,0xA4,0x0E,0x13,0x00,0x00, "Nikon", "JAA807DA", "AF-S Nikkor 70-200mm f/2.8G ED VR II"},
 {0xA3,0x3C,0x29,0x44,0x30,0x30,0xA5,0x0E,0x01,0x00,0x00, "Nikon", "JAA806DA", "AF-S Nikkor 16-35mm f/4G ED VR"},
 {0xA4,0x54,0x37,0x37,0x0C,0x0C,0xA6,0x06,0x01,0x00,0x00, "Nikon", "JAA131DA", "AF-S Nikkor 24mm f/1.4G ED"},
@@ -2113,6 +2115,7 @@ fmountlens[] = {
 //AB                AD                                          -- no lens --
 {0xAC,0x38,0x53,0x8E,0x34,0x3C,0xAE,0x0E,0x01,0x00,0x00, "Nikon", "JAA814DA", "AF-S DX Nikkor 55-300mm f/4.5-5.6G ED VR"},
 {0xAD,0x3C,0x2D,0x8E,0x2C,0x3C,0xAF,0x0E,0x01,0x00,0x00, "Nikon", "JAA812DA", "AF-S DX Nikkor 18-300mm f/3.5-5.6G ED VR"},
+{0xAD,0x3C,0xA0,0xA0,0x3C,0x3C,0xD8,0x4E,0x00,0x00,0x00, "Nikon", "JAA535DA", "AF-S Nikkor 500mm f/5.6E PF ED VR"},
 {0xAE,0x54,0x62,0x62,0x0C,0x0C,0xB0,0x06,0x01,0x00,0x00, "Nikon", "JAA338DA", "AF-S Nikkor 85mm f/1.4G"},
 {0xAF,0x54,0x44,0x44,0x0C,0x0C,0xB1,0x06,0x01,0x00,0x00, "Nikon", "JAA134DA", "AF-S Nikkor 35mm f/1.4G"},
 {0xB0,0x4C,0x50,0x50,0x14,0x14,0xB2,0x06,0x01,0x00,0x00, "Nikon", "JAA015DA", "AF-S Nikkor 50mm f/1.8G"},
@@ -2404,6 +2407,7 @@ fmountlens[] = {
 //M                                         "Tamron" "63D"    "AF 35-90mm F/4-5.6";
 //M                                         "Tamron" "65D"    "SP AF 35-105mm F/2.8 Aspherical";
 //M                                         "Tamron" ""       "AF 35-135mm F/3.5-4.5";
+{0xC9,0x3C,0x44,0x76,0x25,0x31,0xDF,0x4E,0x00,0x00,0x00, "Tamron", "A043", "35-150mm F/2.8-4 Di VC OSD"},
 {0x00,0x47,0x53,0x80,0x30,0x3C,0x00,0x06,0x00,0x00,0x00, "Tamron", "A15", "AF 55-200mm F/4-5.6 Di II LD"},
 {0xF7,0x53,0x5C,0x80,0x24,0x24,0x84,0x06,0x01,0x00,0x00, "Tamron", "A001", "SP AF 70-200mm F/2.8 Di LD (IF) Macro"},
 {0xFE,0x53,0x5C,0x80,0x24,0x24,0x84,0x06,0x01,0x00,0x00, "Tamron", "A001", "SP AF 70-200mm F/2.8 Di LD (IF) Macro"},
@@ -2926,7 +2930,7 @@ fmountlens[] = {
             return os << "(" << value << ")";
         }
 
-// from https://github.com/exiftool/exiftool/blob/12.12/lib/Image/ExifTool/Nikon.pm#L4646
+// from https://github.com/exiftool/exiftool/blob/12.44/lib/Image/ExifTool/Nikon.pm#L4969
 static const struct ZMntLens {uint16_t lid; const char *manuf, *lensname;}
 zmountlens[] = {
              {1 , "Nikon", "Nikkor Z 24-70mm f/4 S"},
@@ -2945,6 +2949,13 @@ zmountlens[] = {
             {21 , "Nikon", "Nikkor Z 50mm f/1.2 S"}, //IB
             {22 , "Nikon", "Nikkor Z 24-50mm f/4-6.3"}, //IB
             {23 , "Nikon", "Nikkor Z 14-24mm f/2.8 S"}, //IB
+            {24 , "Nikon", "Nikkor Z MC 105mm f/2.8 VR S"}, //IB
+            {27 , "Nikon", "Nikkor Z MC 50mm f/2.8"}, //IB
+            {28 , "Nikon", "Nikkor Z 100-400mm f/4.5-5.6 VR S"}, //28
+            {29 , "Nikon", "Nikkor Z 28mm f/2.8"}, //IB
+            {30 , "Nikon", "Nikkor Z 400mm f/2.8 TC VR S"}, //28
+            {31 , "Nikon", "Nikkor Z 24-120 f/4"}, //28
+            {32 , "Nikon", "Nikkor Z 800mm f/6.3 VR S"}, //28
             {0 , "", ""} //end of array
 };
 

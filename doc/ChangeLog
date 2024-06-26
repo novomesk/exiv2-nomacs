@@ -1,3 +1,32 @@
+Changes from version 0.28.1 to 0.28.2
+-------------------------------------
+
+Release Notes:
+
+* https://github.com/Exiv2/exiv2/issues/2914
+* https://github.com/Exiv2/exiv2/milestone/13?closed=1
+
+This release also fixes two low-severity security issues in quicktimevideo.cpp:
+
+* [CVE-2024-24826](https://github.com/Exiv2/exiv2/security/advisories/GHSA-g9xm-7538-mq8w): out-of-bounds read in QuickTimeVideo::NikonTagsDecoder.
+* [CVE-2024-25112](https://github.com/Exiv2/exiv2/security/advisories/GHSA-crmj-qh74-2r36): denial of service due to unbounded recursion in QuickTimeVideo::multipleEntriesDecoder.
+
+These vulnerabilities are in a new feature (quicktime video) that was added in version 0.28.0, so earlier versions of Exiv2 are not affected.
+
+Changes from version 0.28.0 to 0.28.1
+-------------------------------------
+
+Release Notes:
+https://github.com/Exiv2/exiv2/issues/2813
+
+This release also fixes [CVE-2023-44398](https://github.com/Exiv2/exiv2/security/advisories/GHSA-hrw9-ggg3-3r4r), an out-of-bounds write in `BmffImage::brotliUncompress`. The vulnerability is in new code that was added in version 0.28.0, so earlier versions of Exiv2 are not affected.
+
+Changes from version 0.27.6 to 0.28.0
+-------------------------------------
+
+Release Notes:
+https://github.com/Exiv2/exiv2/issues/2406#issuecomment-1529139799
+
 Changes from version 0.27.5 to 0.27.6
 -------------------------------------
 
@@ -42,24 +71,23 @@ Bugs/Fixes
 ----------
 
 |  Group        | PR     |  Topic                                     | Issue  |
-|:---           |:--     |:--                                         |:--     |
-| Bugs & Fixes  | #1475<br>#1490 | bmff Base Media File Format        | #1229<br>#1489 |
-|               | #1517<br>#1513 | JPX/bmff support                   | #1503  |
-|               | #1528<br>#1540<br>#1681 | Revision notes and Version String  |  |
-|               | #1657  | Quadratic complexity performance bug       |        |
-|               | #1648  | Update bmffimage.hpp include order and path|        |
-|               | #1624  | Fix Valgrind CI                            |        |
+|:--------------|:-------|:-------------------------------------------|:-------|
+| Bugs &        | #1475  | **bmff** Base Media File Format            | #1229  |
+| Fixes         | #1490  |                                            | #1489  | 
+|               | #1517  | JPX/bmff support                           | #1503  |
 |               | #1518  | Changes Exiv2::enableBMFF() API            | #1508  |
-|               | #1519  |  samples/metacopy.cpp optstring            | #1504  |
+|               | #1519  | samples/metacopy.cpp optstring             | #1504  |
 |               | #1512  | Avif file -ps image_size fix               | #1512  |
 |               | #1493  | v0.27.4 application tests                  |        | 
 |               | #1486  | Empty Exif Ascii handling                  | #1484  |
 |               | #1482  | Issues with LangAlt command-line parsing   | #1481  |
 |               | #1480  | DNG 1.6 triple-illuminant calibration tags |        |
-|               | #1469<br>#1472 | Sony 2010e tag support             | #1464<br>#1471  |
+|               | #1469  | Sony 2010e tag support                     | #1464  |
+|               | #1472  |                                            | #1471  |
 |               | #1461  | cppcheck detected performance issues       | #1459  |
 |               | #1444  | Fix comment typo is xmpprint.cpp           |        |
-|               | #1442  | Test Nikon LensData v8 handler             | #1437<br>#1433 |
+|               | #1442  | Test Nikon LensData v8 handler             | #1437  |
+|               |        |                                            | #1433  |
 |               | #1432  | Binary output handling                     | #1431  |
 |               | #1436  | DNG 1.6 Support                            |        |
 |               | #1427  | prettyPrint Planar Config                  |        |
@@ -74,7 +102,8 @@ Bugs/Fixes
 |               | #1391  | DNG Changes                                |        |
 |               | #1389  | Exif 2.32 Support                          | #929   |
 |               | #1384  | Disable exiv2 option --binary              |        |
-|               | #1386  | Adding more easy accessors                 | #1385<br>#1054 |
+|               | #1386  | Adding more easy accessors                 | #1385  |
+|               |        |                                            | #1054  |
 |               | #1360  | base64 decode fixes                        | #1358  |
 |               | #1342  | PSD fixes                                  | #1261  | 
 |               | #1331  | Remove BigTiff Support                     | #1329  |
@@ -82,22 +111,10 @@ Bugs/Fixes
 |               | #1314  | ASAN issues with RemoteIo                  | #1307  |
 |               | #1313  | crwtest fixes                              | #1297  |
 | Security      | #1483  | Define Security Policy                     | #1122  |
-|               | #1606  | Initialise _binary in actions.hpp          |        |
-|               | #1592  | Prevent large alloc() by malicious file    |        |
-|               | #1591  | Fix loop caused by subBox.length==0        |        |
-|               | #1675  | out-of-bounds-read bmffimage.cpp           |        |
-|               | #1627  | readOrThrow check result from io.read()    |        |
-|               | #1587  | bounds check++ Jp2Image::encodeJp2Header   |        |
-|               | #1581  | bounds check in WebPImage::doWriteMetadata |        |
-|               | #1577  | bounds check in JpsImage::enclodeJp2Header |        |
-|               | #1539  | Integer overflow                           | #1530  |
-|               | #1533  | Out of buffer access                       | #1529  |
-|               | #1529  | heap-buffer-overflow Jp2::doWriteMetadata  | #1587  |
 |               | #1523  | jp2image exiv2 asan issue                  | #1522  |
 | Lens          | #1375  | Olympus M.Zuiko Digital ED 17mm F1.2 Pro   |        |
 |               | #1373  | Sigma 18-35mm f/1.8 DC HSM                 |        |
-| Build         | #1496<br>#1498 | Exiv2 v0.27.4 RC1                  |        |
-|               | #1500  | make uninstall issues warnings             | #1499  |
+| Build         | #1496  | Exiv2 v0.27.4 RC1                          |        |
 |               | #1452  | Building on windows/msys2                  | #1449  |
 |               | #1439  | Fix PACKAGE_URL and PROJECT_DESCRIPTION    |        |
 |               | #1434  | CI build MinGW/msys2 and Cygwin            |        |
@@ -129,19 +146,12 @@ Bugs/Fixes
 |               | #1403  | Visual Studio 2019 buildnotes              | #1394  |
 |               | #1400  | IPTC tag corrections on web-site           | #1393  |
 |               | #1387  | Fix man page typos concerning CanonFi      |        |
-| Withdrawn/    |        | Discussion FLIR Camera  Support            | #1479  |
-| No action     |        | BMFF/JPEG-XL patent discussion             | #1679  |
-|               |        | bmff test failures on 0.27.3.9 (ok on RC2) | #1680  |
-|               |        | WIN_UNICODE API not in on-line docs        | #1656  |
-|               |        | Reporting different Lens for CR3 files     | #1639  |
-|               |        | exiv2.org is down                          | #1604  |
-|               |        | building with emscriptem                   | #1602  |
-|               |        | Exiv2.org future plans                     | #1574  |
-|               |        | Olympus OM-D E-M10 Mark III and ~/.exiv2   | #1544  |
+| Withdrawn     |        | Discussion FLIR Camera  Support            | #1479  |
+| No action     |        | Sigma 60-600mm f/4.5-6.3 DG OS HMS | Sport | #1478  |
 |               | #1527  | Test Suite to ignore errors                | #1502  |
 |               |        | Include path discussion                    | #1516  |
-|               |        | Sigma 60-600mm f/4.5-6.3 DG OS HMS \| Sport| #1478  |
-|               | #1474<br>#1458 | Withdrawn PRs concerningin bmff    | #1229  |
+|               | #1474  | Withdrawn PRs concerning bmff              | #1229  |
+|               | #1458  |                                            |        |
 |               |        | Nikon d780 + Tamron 85mm 1.8 VC            | #1468  |
 |               |        | Exif.Photo.DateTimeOriginal discussion     | #1467  |
 |               |        | Question about sidecar files               | #1465  |
@@ -153,13 +163,13 @@ Bugs/Fixes
 |               | #1286  | Exiv2::XmpProperties::propertyList()       | #1206  |
 |               | #1226  | XMP false report                           | #1223  | 
 |               |        | API Compatibility Test                     | #890   |
-| Team/         |        | Future of Exiv2                            | #1466  |
+| Team          |        | Future of Exiv2                            | #1466  |
 | Discussion    |        | Project Status                             | #1462  |
 |               |        | Open Invention Network                     | #1447  |
 
 Robin Mills
 robin@clanmills.com
-2021-05-22
+2021-04-07
 
 Changes from version 0.27.2 to 0.27.3
 -------------------------------------
@@ -370,7 +380,7 @@ Build: (11)
 	0001329	Error during cmake with gcc version parsing
 	0001310	Provide support for msys/2.0
 	0001299	exiv2-0.26-trunk.tar.gz changed on download server
-	0001270	Using libexiv2.a/.lib  in multhreaded app segfaults.
+	0001270	Using libexiv2.a/.lib  in multithreaded app segfaults.
 	0001237	Report CMake/MinGW issues to Kitware
 	0001188	Provide build support for C++11
 	0001174	Visual Studio Support Enhancements
@@ -690,9 +700,9 @@ Changes from version 0.25 to 0.26
 	- 0001145:	Respect Sony/Minolta lenses with shared LensID such as Tamron SP AF 17-50mm F2.8 XR Di II LD
 	- 0001144:	Sigma 10-20mm f/4-5.6 EX DC is detected as Tamaron
 			(Simon Harhues)
-	- 0001142:	Manual lens does not get recogniced: Beroflex zoom 500mm
+	- 0001142:	Manual lens does not get recognized: Beroflex zoom 500mm
 			(Simon Harhues / Niels Kristian Bech Jensen)
-	- 0001141:	Manual lens does not get recogniced: Pentax macro 100mm
+	- 0001141:	Manual lens does not get recognized: Pentax macro 100mm
 			(Simon Harhues / Niels Kristian Bech Jensen)
 	- 0001118:	Add support for ZEISS Loxia 2/50 lens
 			(Eugen Neu)
@@ -736,7 +746,7 @@ Changes from version 0.25 to 0.26
 	- 0000922:	Add options -pS and -dI to application exiv2
 	- 0000855:	Segfault when accessing focalLength with 0.23
 			(Tobias E.)
-	- 0000756:	Access to ICC Profile (TAG: 0x8773) data in Exif as uninterpretted binary
+	- 0000756:	Access to ICC Profile (TAG: 0x8773) data in Exif as uninterpreted binary
 			(Ray NA)
 	- 0000676:	Patch for reading ICC color profiles
 			(Andreas Huggel)
@@ -830,7 +840,7 @@ Changes from version 0.25 to 0.26
 
 * Testing: (6)
 	- 0001230:	Bug Hunt for v0.26
-	- 0001207:	digiKam maintenance tool to synchronize files metadata and database crash in Exiv2 (re-entrancy issue ?)
+	- 0001207:	digiKam maintenance tool to synchronize files metadata and database crash in Exiv2 (reentrancy issue ?)
 			(Uwe Haider)
 	- 0001057:	Implement target/modifier - (stdin/stdout) for exiv2 options -i (insert) and -e (extract)
 	- 0001045:	Add COPYRIGHT file to test/data/
@@ -1239,7 +1249,7 @@ Changes from version 0.23 to 0.24
 	           (Reported by S. Verdoold, patch by Pascal de Bruijn)
 	- 0000861: Sigma 18-250mm not properly recognised on Pentax
 	           (Reported by S. Verdoold, patch by Pascal de Bruijn)
-	- 0000862: Video code is failing the test suite (on all plaforms)
+	- 0000862: Video code is failing the test suite (on all platforms)
 	           (Robin Mills, Abhinav Badola)
 	- 0000865: Patches for locale and boost issue (Patches by Mario anyc)
 	- 0000868: Support for two lens for sony mount
@@ -1510,7 +1520,7 @@ Changes from version 0.20 to 0.21
 	           (Patch by Matthias Baas)
 	         - Added ExifKey::defaultCount() to access the new count reference
 	           information.
-	         - Fixed zlib uncompression of large PNG metadata buffers.
+	         - Fixed zlib decompression of large PNG metadata buffers.
 	         - Improved determination of MIME type.
 	         - Updated Canon makernote. (Greg Mansfield, Axel Waggershauser)
 	         - Updated Olympus makernote. (Greg Mansfield)
@@ -1760,7 +1770,7 @@ Changes from version 0.18 to 0.18.1
 	           support for multiple TIFF tree structures.
 
 * MSVC related
-	- 0000621: windows librarys are forcing a link to
+	- 0000621: windows libraries are forcing a link to
 	           ..\..\..\zlib-1.2.3\projects\visual6\blah\blah.
                    (Reported by Peter J. Ersts, fix by Robin Mills)
 
@@ -2098,7 +2108,7 @@ Changes from version 0.12 to 0.13
 	           and insert actions.
 
 * Exiv2 library
-	- 0000503: [metadata] Tiff generated by photoshop crashes exiv2
+	- 0000503: [metadata] Tiff generated by Photoshop crashes exiv2
 	           (digikam bug 139658).
 	- 0000502: [iptc] New TIFF parser: Decode IPTC from Exif.Image.IPTCNAA.
 	           (Reported by Walter Hangartner)
@@ -2171,7 +2181,7 @@ Changes from version 0.11 to 0.12
 	         - [exif] Updated Minolta makernote. (Gilles Caulier, Paul Tribick)
 
 * MSVC related
-	- 0000487: Crash in exiv2.exe (built with VC++ 2005 Express) when examing TIFF
+	- 0000487: Crash in exiv2.exe (built with VC++ 2005 Express) when examining TIFF
 	           images (Reported with patch by Dimitri Schoolwerth)
 
 

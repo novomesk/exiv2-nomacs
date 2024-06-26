@@ -8,17 +8,16 @@ README-CONAN.md                                 Developer Manual Appendix
 README-SAMPLES.md                               Developer Sample Code Manual
 releasenotes.txt                                Late breaking news
 exiv2.png                                       Exiv2 Logo
-matrix-standard-vector-logo-xs.png              Chat Server Logo
 COPYING                                         GPLv2.0 Software License
 
 Deliverable                                     Location
 -----------                                     --------
 exiv2 and sample applications                   bin/exiv2
-libraries                                       lib/libexiv2.@VM@.@VN@.@VD@@VR@.dylib & libexiv2-xmp.a
-pkg-config file                                 lib/pkgconfig/exiv2.pc
+shared library                                  lib/libexiv2.@VM@.@VN@.@VD@@VR@.dylib
 CMake support/consume files                     lib/cmake/exiv2
+pkg-config file                                 lib/pkgconfig/exiv2.pc
 include files                                   include/exiv2/
-man page                                        share/man/man1/exiv2.1
+man pages                                       share/man/
 localisation files                              share/locale/
 sample code                                     samples/exifprint.cpp
 build/test log                                  logs/build.txt

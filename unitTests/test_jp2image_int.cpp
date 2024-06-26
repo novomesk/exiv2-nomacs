@@ -7,7 +7,7 @@
 using namespace Exiv2::Internal;
 
 namespace {
-void setValidValues(std::vector<uint8_t>& boxData) {
+void setValidValues(std::vector<std::uint8_t>& boxData) {
   // The first 4 bytes correspond to the BR (Brand). It must have the value 'jp2\040'
   boxData[0] = 'j';
   boxData[1] = 'p';
@@ -24,27 +24,27 @@ void setValidValues(std::vector<uint8_t>& boxData) {
 }
 }  // namespace
 
-TEST(Jp2_FileTypeBox, isNotValidWithoutProperValuesSet) {
-  const std::vector<uint8_t> boxData(12);
+TEST(Jp2FileTypeBox, isNotValidWithoutProperValuesSet) {
+  const std::vector<std::uint8_t> boxData(12);
   ASSERT_FALSE(isValidBoxFileType(boxData));
 }
 
-TEST(Jp2_FileTypeBox, isValidWithMinimumPossibleSizeAndValidValues) {
-  std::vector<uint8_t> boxData(12);
+TEST(Jp2FileTypeBox, isValidWithMinimumPossibleSizeAndValidValues) {
+  std::vector<std::uint8_t> boxData(12);
   setValidValues(boxData);
   ASSERT_TRUE(isValidBoxFileType(boxData));
 }
 
-TEST(Jp2_FileTypeBox, isNotValidWithMinimumPossibleSizeButInvalidBrand) {
-  std::vector<uint8_t> boxData(12);
+TEST(Jp2FileTypeBox, isNotValidWithMinimumPossibleSizeButInvalidBrand) {
+  std::vector<std::uint8_t> boxData(12);
   setValidValues(boxData);
   boxData[2] = '3';  // Change byte in the brand field
 
   ASSERT_FALSE(isValidBoxFileType(boxData));
 }
 
-TEST(Jp2_FileTypeBox, isNotValidWithMinimumPossibleSizeButInvalidCL1) {
-  std::vector<uint8_t> boxData(12);
+TEST(Jp2FileTypeBox, isNotValidWithMinimumPossibleSizeButInvalidCL1) {
+  std::vector<std::uint8_t> boxData(12);
   setValidValues(boxData);
   boxData[10] = '3';  // Change byte in the CL1
 
@@ -53,18 +53,18 @@ TEST(Jp2_FileTypeBox, isNotValidWithMinimumPossibleSizeButInvalidCL1) {
 
 // ----------------------------------------------------------
 
-TEST(Jp2_FileTypeBox, withInvalidBoxDataSizeIsInvalid) {
-  std::vector<uint8_t> boxData(13);  // 12 + 1 (the extra byte causes problems)
+TEST(Jp2FileTypeBox, withInvalidBoxDataSizeIsInvalid) {
+  std::vector<std::uint8_t> boxData(13);  // 12 + 1 (the extra byte causes problems)
   ASSERT_FALSE(isValidBoxFileType(boxData));
 }
 
-TEST(Jp2_FileTypeBox, withSmallBoxDataSizeIsInvalid) {
-  std::vector<uint8_t> boxData(7);  // Minimum size is 8
+TEST(Jp2FileTypeBox, withSmallBoxDataSizeIsInvalid) {
+  std::vector<std::uint8_t> boxData(7);  // Minimum size is 8
   ASSERT_FALSE(isValidBoxFileType(boxData));
 }
 
-TEST(Jp2_FileTypeBox, with2CLs_lastOneWithBrandValue_isValid) {
-  std::vector<uint8_t> boxData(16);
+TEST(Jp2FileTypeBox, with2CLsLastOneWithBrandValueIsValid) {
+  std::vector<std::uint8_t> boxData(16);
   // The first 4 bytes correspond to the BR (Brand). It must have the value 'jp2\040'
   boxData[0] = 'j';
   boxData[1] = 'p';

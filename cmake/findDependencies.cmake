@@ -1,5 +1,21 @@
-# set include path for FindXXX.cmake files
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
+if (CONAN_AUTO_INSTALL)
+    # Download automatically the cmake-conan integration file
+    if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+        message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
+        file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/master/conan.cmake"
+                      "${CMAKE_BINARY_DIR}/conan.cmake"
+                      TLS_VERIFY ON)
+    endif()
+
+    include(${CMAKE_BINARY_DIR}/conan.cmake)
+
+    conan_cmake_autodetect(settings)
+    conan_cmake_install(PATH_OR_REFERENCE ..
+                        BUILD missing
+                        REMOTE conancenter
+                        OPTIONS webready=True
+                        SETTINGS ${settings})
+endif()
 
 if (APPLE)
     # On Apple, we use the conan cmake_paths generator
@@ -12,35 +28,31 @@ else()
     list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 endif()
 
-# don't use Frameworks on the Mac (#966)
-if (APPLE)
-     set(CMAKE_FIND_FRAMEWORK NEVER)
-endif()
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
 
 find_package (Python3 COMPONENTS Interpreter)
+if (NOT Python3_Interpreter_FOUND)
+    message(WARNING "Python3 was not found. Python tests under the 'tests' folder will not be executed")
+endif()
 
-find_package(Threads REQUIRED)
+find_package(Filesystem COMPONENTS Experimental Final REQUIRED)
+
+# don't use Frameworks on the Mac (#966)
+if (APPLE)
+    set(CMAKE_FIND_FRAMEWORK NEVER)
+endif()
 
 if( EXIV2_ENABLE_PNG )
     find_package( ZLIB REQUIRED )
 endif( )
 
+if( EXIV2_ENABLE_BMFF AND EXIV2_ENABLE_BROTLI )
+    find_package( Brotli REQUIRED )
+endif( )
+
 if( EXIV2_ENABLE_WEBREADY )
     if( EXIV2_ENABLE_CURL )
         find_package(CURL REQUIRED)
-    endif()
-
-    if( EXIV2_ENABLE_SSH )
-        find_package(libssh CONFIG REQUIRED)
-        # Define an imported target to have compatibility with <=libssh-0.9.0
-        # libssh-0.9.1 is broken regardless.
-        if(NOT TARGET ssh)
-            add_library(ssh SHARED IMPORTED)
-            set_target_properties(ssh PROPERTIES
-                IMPORTED_LOCATION "${LIBSSH_LIBRARIES}"
-                INTERFACE_INCLUDE_DIRECTORIES "${LIBSSH_INCLUDE_DIR}"
-            )
-        endif()
     endif()
 endif()
 
@@ -60,8 +72,16 @@ endif( )
 
 find_package(Iconv)
 if( ICONV_FOUND )
-    message ( "-- ICONV_INCLUDE_DIR : " ${Iconv_INCLUDE_DIR} )
-    message ( "-- ICONV_LIBRARIES : " ${Iconv_LIBRARY} )
+    message ( "-- Iconv_INCLUDE_DIRS : " ${Iconv_INCLUDE_DIRS} )
+    message ( "-- Iconv_LIBRARIES : " ${Iconv_LIBRARIES} )
+endif()
+
+if( EXIV2_ENABLE_INIH )
+  find_package(inih)
+  message ( "-- inih_INCLUDE_DIRS : " ${inih_INCLUDE_DIRS} )
+  message ( "-- inih_LIBRARIES : " ${inih_LIBRARIES} )
+  message ( "-- inih_inireader_INCLUDE_DIRS : " ${inih_inireader_INCLUDE_DIRS} )
+  message ( "-- inih_inireader_LIBRARIES : " ${inih_inireader_LIBRARIES} )
 endif()
 
 if( BUILD_WITH_CCACHE )
@@ -72,4 +92,3 @@ if( BUILD_WITH_CCACHE )
         set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
     endif()
 endif()
-

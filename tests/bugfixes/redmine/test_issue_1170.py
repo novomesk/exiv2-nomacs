@@ -10,10 +10,11 @@ class CheckSigma35mm(metaclass=system_tests.CaseMeta):
 
     commands = [ "$exiv2 -pa --grep lens/i $filename" ]
 
-    stdout = [ """Exif.CanonCs.LensType                        Short       1  Sigma 35mm f/1.4 DG HSM
+    stdout = [ """Exif.CanonCs.LensType                        Short       1  Sigma 35mm f/1.4 DG HSM *OR* Sigma 35mm f/1.5 FF High-Speed Prime | 017
 Exif.CanonCs.Lens                            Short       3  35.0 mm
 Exif.Canon.LensModel                         Ascii      74  35mm
-Exif.Photo.LensSpecification                 Rational    4  35/1 35/1 0/1 0/1
+Exif.CanonLe.LensSerialNumber                Byte        5  0000000000
+Exif.Photo.LensSpecification                 Rational    4  35mm
 Exif.Photo.LensModel                         Ascii       5  35mm
 Exif.Photo.LensSerialNumber                  Ascii      11  0000000000
 """,

@@ -16,52 +16,52 @@ class CheckSony6000WithoutLensModels(metaclass=system_tests.CaseMeta):
     ]
 
     commands = [
-        "$exiv2 -pa -g Lens {!s}".format(fname) for fname in filenames
+        "$exiv2 -pa -g LensSpecification -g LensModel -g LensID {!s}".format(fname) for fname in filenames
     ]
 
     stdout = [
         """Exif.Sony2.LensID                            Long        1  Sony E 50mm F1.8 OSS
-Exif.Photo.LensSpecification                 Rational    4  500/10 500/10 18/10 18/10
+Exif.Photo.LensSpecification                 Rational    4  50mm F1.8
 Exif.Photo.LensModel                         Ascii      16  E 50mm F1.8 OSS
 """,
         """Exif.Sony2.LensID                            Long        1  Sony E 50mm F1.8 OSS
-Exif.Photo.LensSpecification                 Rational    4  500/10 500/10 18/10 18/10
+Exif.Photo.LensSpecification                 Rational    4  50mm F1.8
 Exif.Photo.LensModel                         Ascii      16  E 50mm F1.8 OSS
 """,
         """Exif.Sony2.LensID                            Long        1  E PZ 16-50mm F3.5-5.6 OSS
-Exif.Photo.LensSpecification                 Rational    4  160/10 500/10 35/10 56/10
+Exif.Photo.LensSpecification                 Rational    4  16-50mm F3.5-5.6
 Exif.Photo.LensModel                         Ascii      26  E PZ 16-50mm F3.5-5.6 OSS
 """,
         """Exif.Sony2.LensID                            Long        1  E PZ 16-50mm F3.5-5.6 OSS
-Exif.Photo.LensSpecification                 Rational    4  160/10 500/10 35/10 56/10
+Exif.Photo.LensSpecification                 Rational    4  16-50mm F3.5-5.6
 Exif.Photo.LensModel                         Ascii      26  E PZ 16-50mm F3.5-5.6 OSS
 """,
         """Exif.Sony2.LensID                            Long        1  E PZ 16-50mm F3.5-5.6 OSS
-Exif.Photo.LensSpecification                 Rational    4  160/10 500/10 35/10 56/10
+Exif.Photo.LensSpecification                 Rational    4  16-50mm F3.5-5.6
 Exif.Photo.LensModel                         Ascii      26  E PZ 16-50mm F3.5-5.6 OSS
 """,
         """Exif.Sony2.LensID                            Long        1  E PZ 16-50mm F3.5-5.6 OSS
-Exif.Photo.LensSpecification                 Rational    4  160/10 500/10 35/10 56/10
+Exif.Photo.LensSpecification                 Rational    4  16-50mm F3.5-5.6
 Exif.Photo.LensModel                         Ascii      26  E PZ 16-50mm F3.5-5.6 OSS
 """,
         """Exif.Sony2.LensID                            Long        1  E PZ 16-50mm F3.5-5.6 OSS
-Exif.Photo.LensSpecification                 Rational    4  160/10 500/10 35/10 56/10
+Exif.Photo.LensSpecification                 Rational    4  16-50mm F3.5-5.6
 Exif.Photo.LensModel                         Ascii      26  E PZ 16-50mm F3.5-5.6 OSS
 """,
         """Exif.Sony2.LensID                            Long        1  E PZ 16-50mm F3.5-5.6 OSS
-Exif.Photo.LensSpecification                 Rational    4  160/10 500/10 35/10 56/10
+Exif.Photo.LensSpecification                 Rational    4  16-50mm F3.5-5.6
 Exif.Photo.LensModel                         Ascii      26  E PZ 16-50mm F3.5-5.6 OSS
 """,
         """Exif.Sony2.LensID                            Long        1  E PZ 16-50mm F3.5-5.6 OSS
-Exif.Photo.LensSpecification                 Rational    4  160/10 500/10 35/10 56/10
+Exif.Photo.LensSpecification                 Rational    4  16-50mm F3.5-5.6
 Exif.Photo.LensModel                         Ascii      26  E PZ 16-50mm F3.5-5.6 OSS
 """,
         """Exif.Sony2.LensID                            Long        1  E PZ 16-50mm F3.5-5.6 OSS
-Exif.Photo.LensSpecification                 Rational    4  160/10 500/10 35/10 56/10
+Exif.Photo.LensSpecification                 Rational    4  16-50mm F3.5-5.6
 Exif.Photo.LensModel                         Ascii      26  E PZ 16-50mm F3.5-5.6 OSS
 """,
         """Exif.Sony2.LensID                            Long        1  E PZ 16-50mm F3.5-5.6 OSS
-Exif.Photo.LensSpecification                 Rational    4  160/10 500/10 35/10 56/10
+Exif.Photo.LensSpecification                 Rational    4  16-50mm F3.5-5.6
 Exif.Photo.LensModel                         Ascii      26  E PZ 16-50mm F3.5-5.6 OSS
 """,
 

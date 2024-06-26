@@ -1,52 +1,57 @@
-name: Linux-Ubuntu Matrix on PRs
+name: On PRs - Linux-Ubuntu Matrix
 
-on: [pull_request]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    paths-ignore:
+      - "*.md"
 
 jobs:
   Linux:
-    name: 'Ubuntu 20.04 - GCC, BuildType:${{matrix.build_type}}, SHARED:${{matrix.shared_libraries}}'
-    runs-on: ubuntu-latest
+    name: 'Ubuntu 22.04 - GCC, BuildType:${{matrix.build_type}}, SHARED:${{matrix.shared_libraries}}'
+    runs-on: ubuntu-22.04
 
     strategy:
       fail-fast: false
       matrix:
         build_type: [Release, Debug]
         shared_libraries: [ON, OFF]
-        
-    steps:
-      - uses: actions/checkout@v3
 
-      - name: install dependencies
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
         run: |
-          sudo apt-get install ninja-build
-          pip3 install conan==1.53.0
+          sudo apt install -y tree ninja-build
+          python3 -m pip install conan==1.*
 
       - name: Conan common config
         run: |
-          conan config install https://github.com/conan-io/conanclientcert.git
           conan profile new --detect default
           conan profile update settings.build_type=${{matrix.build_type}} default
           conan profile update settings.compiler.libcxx=libstdc++11 default
 
       - name: Run Conan
         run: |
-          mkdir build && cd build
+          mkdir build-base_linux && cd build-base_linux
           conan profile list
           conan profile show default
           conan install .. -o webready=True --build missing
 
       - name: Build
         run: |
-          cd build
-          cmake -GNinja -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DBUILD_SHARED_LIBS=${{matrix.shared_libraries}} -DEXIV2_ENABLE_PNG=ON -DEXIV2_ENABLE_WEBREADY=ON -DEXIV2_ENABLE_CURL=ON -DEXIV2_BUILD_UNIT_TESTS=ON -DEXIV2_ENABLE_BMFF=ON -DEXIV2_TEAM_WARNINGS_AS_ERRORS=ON -DCMAKE_INSTALL_PREFIX=install ..
-          cmake --build .
+          cmake --preset base_linux -S . -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DBUILD_SHARED_LIBS=${{matrix.shared_libraries}}
+          cmake --build build-base_linux --parallel
 
       - name: Install
         run: |
-          cd build
-          cmake --build . --target install
-          tree install
+          cd build-base_linux
+          cmake --install .
 
       - name: Test
         run: |
-          ctest --test-dir build --output-on-failure
+          cd build-base_linux
+          ctest --output-on-failure

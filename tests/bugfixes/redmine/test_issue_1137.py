@@ -18,10 +18,10 @@ class MetadataPiping(metaclass=system_tests.CaseMeta):
         """$exiv2 -pa  --grep GPSL      $filename"""
     ]
 
-    output_grep_GPSL = """set Exif.GPSInfo.GPSLatitudeRef                   N
-set Exif.GPSInfo.GPSLatitude                      51/1 106969/10000 0/1
-set Exif.GPSInfo.GPSLongitudeRef                  W
-set Exif.GPSInfo.GPSLongitude                     1/1 495984/10000 0/1
+    output_grep_GPSL = """set Exif.GPSInfo.GPSLatitudeRef                  Ascii      N
+set Exif.GPSInfo.GPSLatitude                     Rational   51/1 106969/10000 0/1
+set Exif.GPSInfo.GPSLongitudeRef                 Ascii      W
+set Exif.GPSInfo.GPSLongitude                    Rational   1/1 495984/10000 0/1
 """
 
     stdin = [
@@ -36,8 +36,8 @@ set Exif.GPSInfo.GPSLongitude                     1/1 495984/10000 0/1
         output_grep_GPSL,
         "",
         """Exif.GPSInfo.GPSLatitudeRef                  Ascii       2  North
-Exif.GPSInfo.GPSLatitude                     Rational    3  51deg 11' 0"
+Exif.GPSInfo.GPSLatitude                     Rational    3  51 deg 10' 41.81"
 Exif.GPSInfo.GPSLongitudeRef                 Ascii       2  West
-Exif.GPSInfo.GPSLongitude                    Rational    3  1deg 50' 0"
+Exif.GPSInfo.GPSLongitude                    Rational    3  1 deg 49' 35.90"
 """
     ]

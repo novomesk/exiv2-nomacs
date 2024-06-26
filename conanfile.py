@@ -21,24 +21,26 @@ class Exiv2Conan(ConanFile):
         self.options['gtest'].shared = False
 
     def requirements(self):
-        self.requires('zlib/1.2.12')
+        self.requires('zlib/1.2.13')
 
-        if os_info.is_windows and self.options.iconv:
-            self.requires('libiconv/1.16')
+        self.requires('brotli/1.0.9')
 
-        if self.options.unitTests:
-            self.requires('gtest/1.8.1')
-            if self.settings.build_type == "Debug":
-                self.options['gtest'].debug_postfix = ''
+        self.requires('inih/55')
 
         if self.options.webready:
-            self.requires('libcurl/7.80.0')
+            self.requires('libcurl/7.85.0')
+
+        if os_info.is_windows and self.options.iconv:
+            self.requires('libiconv/1.17')
+
+        if self.options.unitTests:
+            self.requires('gtest/1.12.1')
 
         if self.options.xmp:
             self.requires('XmpSdk/2016.7@piponazo/stable') # from conan-piponazo
         else:
-            self.requires('expat/2.4.8')
+            self.requires('expat/2.4.9')
 
     def imports(self):
-        self.copy('*.dll', dst='conanDlls', src='bin')
+        self.copy('*.dll', dst='bin', src='bin')
         self.copy('*.dylib', dst='bin', src='lib')

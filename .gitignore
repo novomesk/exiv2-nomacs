@@ -24,3 +24,8 @@ test/tmp/*
 doc/html
 contrib/vms/.vagrant
 /.vscode
+.vs/
+CMakeUserPresets.json
+
+*cppcheck*
+subprojects/packagecache

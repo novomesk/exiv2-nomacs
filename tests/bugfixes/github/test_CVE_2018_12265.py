@@ -2,7 +2,6 @@
 
 import system_tests
 
-
 class AdditionOverflowInLoaderExifJpeg(metaclass=system_tests.CaseMeta):
     """
     Regression test for bug #365:
@@ -17,8 +16,7 @@ class AdditionOverflowInLoaderExifJpeg(metaclass=system_tests.CaseMeta):
         """Error: Upper boundary of data for directory Image, entry 0x00fe is out of bounds: Offset = 0x0000002a, size = 64, exceeds buffer size by 22 Bytes; truncating the entry
 Warning: Directory Image, entry 0x0201: Strip 0 is outside of the data area; ignored.
 Warning: Directory Image, entry 0x0201: Strip 7 is outside of the data area; ignored.
-Error: Offset of directory Thumbnail, entry 0x0201 is out of bounds: Offset = 0x00000000; truncating the entry
-$uncaught_exception $addition_overflow_message
-"""
+""" +
+        ("" if system_tests.BT.Config.is_64bit else "Uncaught exception: Overflow in addition\n")
     ]
-    retval = [1]
+    retval = [0 if system_tests.BT.Config.is_64bit else 1]

@@ -89,6 +89,7 @@ if (EXIV2_BUILD_DOC)
 endif()
 
 include_directories(${CMAKE_BINARY_DIR})  # Make the exv_conf.h file visible for the full project
+include_directories("${PROJECT_SOURCE_DIR}/../build/opencv/3rdparty/zlib")
 
 if( EXIV2_ENABLE_XMP )
   add_subdirectory( xmpsdk )

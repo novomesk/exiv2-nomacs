@@ -437,7 +437,10 @@ constexpr TagDetails sonyModelId[] = {{0, N_("Multiple camera models")},
                                       {394, "ILCE-6700"},
                                       {395, "ZV-1M2"},
                                       {396, "ILCE-7CR"},
-                                      {397, "ILCE-7CM2"}};
+                                      {397, "ILCE-7CM2"},
+                                      {398, "ILX-LR1"},
+                                      {399, "ZV-E10M2"},
+                                      {400, "ILCE-1M2"}};
 
 //! Lookup table to translate Sony creative style (main group) values to readable labels
 constexpr StringTagDetails sonyCreativeStyleStd[] = {{"AdobeRGB", N_("Adobe RGB")},
@@ -465,7 +468,7 @@ constexpr StringTagDetails sonyFileFormat[] = {
     {"0 0 0 2", "JPEG"},      {"1 0 0 0", "SR2 1.0"},   {"2 0 0 0", "ARW 1.0"},   {"3 0 0 0", "ARW 2.0"},
     {"3 1 0 0", "ARW 2.1"},   {"3 2 0 0", "ARW 2.2"},   {"3 3 0 0", "ARW 2.3"},   {"3 3 1 0", "ARW 2.3.1"},
     {"3 3 2 0", "ARW 2.3.2"}, {"3 3 3 0", "ARW 2.3.3"}, {"3 3 5 0", "ARW 2.3.5"}, {"4 0 0 0", "ARW 4.0"},
-    {"4 0 1 0", "ARW 4.0.1"}, {"5 0 0 0", "ARW 5.0.0"}};
+    {"4 0 1 0", "ARW 4.0.1"}, {"5 0 0 0", "ARW 5.0.0"}, {"5 0 1 0", "ARW 5.0.1"}};
 
 //! Lookup table to translate Sony dynamic range optimizer values to readable labels
 constexpr TagDetails print0xb025[] = {{0, N_("Off")},

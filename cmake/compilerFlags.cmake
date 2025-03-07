@@ -3,7 +3,9 @@ include(CheckCXXCompilerFlag)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS ON)
+if (CYGWIN) # Cygwin and MSYS
+  set(CMAKE_CXX_EXTENSIONS ON)
+endif()
 
 if ( MINGW OR UNIX OR MSYS ) # MINGW, Linux, APPLE, CYGWIN
     if (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
@@ -46,10 +48,10 @@ if ( MINGW OR UNIX OR MSYS ) # MINGW, Linux, APPLE, CYGWIN
             endif()
         endif()
 
-        add_compile_options(-Wp,-D_GLIBCXX_ASSERTIONS)
+        add_compile_options(-D_GLIBCXX_ASSERTIONS)
 
         if (CMAKE_BUILD_TYPE STREQUAL Release AND NOT (APPLE OR MINGW OR MSYS))
-            add_compile_options(-Wp,-D_FORTIFY_SOURCE=2) # Requires to compile with -O2
+            add_compile_options(-D_FORTIFY_SOURCE=2) # Requires to compile with -O2
         endif()
 
         if(BUILD_WITH_COVERAGE)

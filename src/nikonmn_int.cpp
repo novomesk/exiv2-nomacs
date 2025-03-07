@@ -2538,6 +2538,7 @@ std::ostream& Nikon3MakerNote::printLensId(std::ostream& os, const Value& value,
        "24mm F1.8 EX DG Aspherical Macro"},
       {0x02, 0x46, 0x37, 0x37, 0x25, 0x25, 0x02, 0x00, 0x00, 0x00, 0x00, "Sigma", "438",
        "24mm F2.8 Super Wide II Macro"},
+      {0xBC, 0x54, 0x3C, 0x3C, 0x0C, 0x0C, 0x4B, 0x46, 0x00, 0x00, 0x00, "Sigma", "441555", "28mm F1.4 DG HSM | A"},
       {0x26, 0x58, 0x3C, 0x3C, 0x14, 0x14, 0x1C, 0x02, 0x00, 0x00, 0x00, "Sigma", "440442",
        "28mm F1.8 EX DG Aspherical Macro"},
       {0x48, 0x54, 0x3E, 0x3E, 0x0C, 0x0C, 0x4B, 0x06, 0x01, 0x00, 0x00, "Sigma", "477554", "30mm F1.4 EX DC HSM"},
@@ -2757,6 +2758,8 @@ std::ostream& Nikon3MakerNote::printLensId(std::ostream& os, const Value& value,
        "SP AF 10-24mm F/3.5-4.5 Di II LD Aspherical (IF)"},
       {0x00, 0x36, 0x1C, 0x2D, 0x34, 0x3C, 0x00, 0x06, 0x00, 0x00, 0x00, "Tamron", "A13",
        "SP AF 11-18mm F/4.5-5.6 Di II LD Aspherical (IF)"},
+      {0xCA, 0x48, 0x27, 0x3E, 0x24, 0x24, 0xDF, 0x4E, 0x00, 0x00, 0x00, "Tamron", "A041",
+       "SP 15-30mm F/2.8 Di VC USD G2"},
       {0xE9, 0x48, 0x27, 0x3E, 0x24, 0x24, 0xDF, 0x0E, 0x00, 0x00, 0x00, "Tamron", "A012",
        "SP 15-30mm F/2.8 Di VC USD"},
       {0xEA, 0x40, 0x29, 0x8E, 0x2C, 0x40, 0xDF, 0x0E, 0x00, 0x00, 0x00, "Tamron", "B016",
@@ -2854,6 +2857,7 @@ std::ostream& Nikon3MakerNote::printLensId(std::ostream& os, const Value& value,
        "SP 70-200mm F/2.8 Di VC USD"},
       {0xE2, 0x47, 0x5C, 0x80, 0x24, 0x24, 0xDF, 0x4E, 0x00, 0x00, 0x00, "Tamron", "A025",
        "SP 70-200mm F/2.8 Di VC USD G2"},
+      {0xCD, 0x47, 0x5C, 0x82, 0x31, 0x31, 0xDF, 0x4E, 0x00, 0x00, 0x00, "Tamron", "A034", "70-210mm F/4 Di VC USD"},
       // M                                         "Tamron" "67D"    "SP AF 70-210mm f/2.8 LD";
       // M                                         "Tamron" ""       "AF 70-210mm F/3.5-4.5";
       // M                                         "Tamron" "158D"   "AF 70-210mm F/4-5.6";
@@ -3832,7 +3836,7 @@ std::ostream& Nikon3MakerNote::printLensId4ZMount(std::ostream& os, const Value&
     return os << "(" << value << ")";
   }
 
-  // from https://github.com/exiftool/exiftool/blob/12.59/lib/Image/ExifTool/Nikon.pm#L5267
+  // cf. https://github.com/exiftool/exiftool/blob/13.16/lib/Image/ExifTool/Nikon.pm#L5668
   static constexpr struct lens {
     uint16_t l;
     const char* vendor;
@@ -3861,7 +3865,7 @@ std::ostream& Nikon3MakerNote::printLensId4ZMount(std::ostream& os, const Value&
       {28, "Nikon", "Nikkor Z 100-400mm f/4.5-5.6 VR S"},  // 28
       {29, "Nikon", "Nikkor Z 28mm f/2.8"},                // IB
       {30, "Nikon", "Nikkor Z 400mm f/2.8 TC VR S"},       // 28
-      {31, "Nikon", "Nikkor Z 24-120 f/4"},                // 28
+      {31, "Nikon", "Nikkor Z 24-120mm f/4 S"},            // 28
       {32, "Nikon", "Nikkor Z 800mm f/6.3 VR S"},          // 28
       {35, "Nikon", "Nikkor Z 28-75mm f/2.8"},             // IB
       {36, "Nikon", "Nikkor Z 400mm f/4.5 VR S"},          // IB
@@ -3875,6 +3879,11 @@ std::ostream& Nikon3MakerNote::printLensId4ZMount(std::ostream& os, const Value&
       {44, "Nikon", "Nikkor Z 70-180mm f/2.8"},
       {45, "Nikon", "Nikkor Z 600mm f/6.3 VR S"},
       {46, "Nikon", "Nikkor Z 135mm f/1.8 S Plena"},
+      {47, "Nikon", "Nikkor Z 35mm f/1.2 S"},
+      {48, "Nikon", "Nikkor Z 28-400mm f/4-8 VR"},
+      {51, "Nikon", "Nikkor Z 35mm f/1.4"},
+      {52, "Nikon", "Nikkor Z 50mm f/1.4"},
+      {2305, "Laowa", "FFII 10mm F2.8 C&D Dreamer"},
       {53251, "Sigma", "56mm F1.4 DC DN | C"},
       {57346, "Tamron", "35-150mm F/2-2.8 Di III VXD"},
   };

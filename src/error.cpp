@@ -90,6 +90,7 @@ constexpr std::array errList{
     N_("Arithmetic operation overflow"),                         // kerArithmeticOverflow
     N_("Memory allocation failed"),                              // kerMallocFailed
     N_("Cannot convert text encoding from '%1' to '%2'"),        // kerInvalidIconvEncoding
+    N_("%1: File access disabled in exiv2 build options"),       // kerFileAccessDisabled %1=path
 };
 static_assert(errList.size() == static_cast<size_t>(Exiv2::ErrorCode::kerErrorCount),
               "errList needs to contain a error msg for every ErrorCode defined in error.hpp");
@@ -163,7 +164,7 @@ const char* Error::what() const noexcept {
 }
 
 void Error::setMsg(int count) {
-  std::string msg{errList.at(static_cast<size_t>(code_))};
+  std::string msg{_(errList.at(static_cast<size_t>(code_)))};
   auto pos = msg.find("%0");
   if (pos != std::string::npos) {
     msg.replace(pos, 2, std::to_string(static_cast<int>(code_)));

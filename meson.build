@@ -1,7 +1,7 @@
 project(
   'exiv2',
   'cpp',
-  version: '0.28.2',
+  version: '0.28.5',
   meson_version: '>=0.54.1',
   default_options: ['warning_level=0', 'cpp_std=c++17'],
 )
@@ -67,9 +67,13 @@ if brotli_dep.found()
   deps += brotli_dep
 endif
 
-curl_dep = dependency('libcurl', disabler: true, required: get_option('curl'))
-if curl_dep.found()
-  deps += curl_dep
+if get_option('webready')
+  curl_dep = dependency('libcurl', required: get_option('curl'))
+  web_dep = declare_dependency(dependencies: [curl_dep])
+  deps += web_dep
+else
+  web_dep = dependency('', disabler: true, required: false)
+  curl_dep = web_dep
 endif
 
 expat_dep = dependency('expat', disabler: true, required: get_option('xmp'))
@@ -113,9 +117,10 @@ cdata.set('EXV_HAVE_XMP_TOOLKIT', expat_dep.found())
 cdata.set('EXV_HAVE_BROTLI', brotli_dep.found())
 cdata.set('EXV_HAVE_ICONV', iconv_dep.found())
 cdata.set('EXV_HAVE_LIBZ', zlib_dep.found())
+cdata.set('EXV_ENABLE_WEBREADY', web_dep.found())
 cdata.set('EXV_USE_CURL', curl_dep.found())
 cdata.set('EXV_ENABLE_NLS', intl_dep.found())
-cdata.set('EXV_ENABLE_WEBREADY', curl_dep.found())
+cdata.set('EXV_ENABLE_FILESYSTEM', true)
 
 cfile = configure_file(
   input: 'cmake/config.h.cmake',
@@ -151,7 +156,7 @@ executable(
 
 samples = {
   'addmoddel': [],
-  'conntest': curl_dep,
+  'conntest': web_dep,
   'convert-test': [],
   'easyaccess-test': [],
   'exifcomment': [],

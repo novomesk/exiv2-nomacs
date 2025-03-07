@@ -11,16 +11,19 @@
 // + standard includes
 #include <algorithm>
 #include <array>
+#include <cstdint>
 #include <cstring>
 #include <sstream>
 #include <stdexcept>
 
+#ifdef EXV_ENABLE_FILESYSTEM
 #if __has_include(<filesystem>)
 #include <filesystem>
 namespace fs = std::filesystem;
 #else
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
+#endif
 #endif
 
 #if defined(_WIN32)
@@ -87,7 +90,7 @@ static char to_hex(char code) {
 
 /// @brief Convert a hex character to its integer value.
 static char from_hex(char ch) {
-  return isdigit(ch) ? ch - '0' : static_cast<char>(tolower(ch)) - 'a' + 10;
+  return 0xF & (isdigit(ch) ? ch - '0' : static_cast<char>(tolower(ch)) - 'a' + 10);
 }
 
 std::string urlencode(const std::string& str) {
@@ -165,7 +168,7 @@ int base64encode(const void* data_buf, size_t dataLength, char* result, size_t r
 size_t base64decode(const char* in, char* out, size_t out_size) {
   size_t result = 0;
   size_t input_length = in ? ::strlen(in) : 0;
-  if (!in || input_length % 4 != 0)
+  if (!in || input_length % 4 != 0 || input_length == 0)
     return result;
 
   auto encoding_table = reinterpret_cast<const unsigned char*>(base64_encode);
@@ -230,7 +233,11 @@ bool fileExists(const std::string& path) {
   if (fileProtocol(path) != pFile) {
     return true;
   }
+#ifdef EXV_ENABLE_FILESYSTEM
   return fs::exists(path);
+#else
+  return false;
+#endif
 }
 
 std::string strError() {
@@ -316,21 +323,26 @@ Uri Uri::Parse(const std::string& uri) {
   auto hostEnd = std::find(authEnd, (pathStart != uriEnd) ? pathStart : queryStart,
                            ':');  // check for port
 
-  result.Host = std::string(hostStart, hostEnd);
+  if (hostStart < hostEnd) {
+    result.Host = std::string(hostStart, hostEnd);
+  }
 
   // port
   if ((hostEnd != uriEnd) && (*hostEnd == ':'))  // we have a port
   {
     ++hostEnd;
     auto portEnd = (pathStart != uriEnd) ? pathStart : queryStart;
-    result.Port = std::string(hostEnd, portEnd);
+    if (hostEnd < portEnd) {
+      result.Port = std::string(hostEnd, portEnd);
+    }
   }
   if (result.Port.empty() && result.Protocol == "http")
     result.Port = "80";
 
   // path
-  if (pathStart != uriEnd)
+  if (pathStart < queryStart) {
     result.Path = std::string(pathStart, queryStart);
+  }
 
   // query
   if (queryStart != uriEnd)
@@ -340,6 +352,7 @@ Uri Uri::Parse(const std::string& uri) {
 }
 
 std::string getProcessPath() {
+#ifdef EXV_ENABLE_FILESYSTEM
 #if defined(__FreeBSD__)
   std::string ret("unknown");
   unsigned int n;
@@ -380,6 +393,9 @@ std::string getProcessPath() {
   } catch (const fs::filesystem_error&) {
     return "unknown";
   }
+#endif
+#else
+  return "unknown";
 #endif
 }
 }  // namespace Exiv2

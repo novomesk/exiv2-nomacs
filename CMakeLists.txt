@@ -2,7 +2,7 @@
 cmake_minimum_required( VERSION 3.11.0 )
 
 project(exiv2
-    VERSION 0.28.2
+    VERSION 0.28.5
     DESCRIPTION    "Exif/IPTC/Xmp C++ metadata library and tools plus ICC Profiles, Previews and more."
     LANGUAGES C CXX
 )
@@ -23,7 +23,7 @@ endif()
 # nomacs config
 SET(ZLIB_LIBRARY_DEBUG "${ZLIB_BUILD_PATH}/lib/Debug/zlibd.lib")
 SET(ZLIB_LIBRARY_RELEASE "${ZLIB_BUILD_PATH}/lib/Release/zlib.lib")
-SET(EXPAT_LIBRARY "${EXPAT_BUILD_PATH}/Release/expat.lib")
+SET(EXPAT_LIBRARY "${EXPAT_BUILD_PATH}/Release/libexpat.lib")
 
 include(cmake/mainSetup.cmake  REQUIRED)
 
@@ -41,6 +41,7 @@ option( EXIV2_ENABLE_BMFF             "Build with BMFF support"                 
 option( EXIV2_ENABLE_BROTLI           "Use Brotli for JPEG XL compressed boxes (BMFF)"        ON  )
 option( EXIV2_ENABLE_VIDEO            "Build with video support"                              ON )
 option( EXIV2_ENABLE_INIH             "Use inih library"                                      ON  )
+option( EXIV2_ENABLE_FILESYSTEM_ACCESS "Build with filesystem access"                          ON)
 
 option( EXIV2_BUILD_SAMPLES           "Build sample applications"                             OFF )
 option( EXIV2_BUILD_EXIV2_COMMAND     "Build exiv2 command-line executable"                   ON  )
@@ -101,17 +102,21 @@ add_subdirectory( src )
 
 if( EXIV2_BUILD_UNIT_TESTS )
   add_subdirectory ( unitTests )
+  set(EXIV2_ENABLE_FILESYSTEM_ACCESS ON)
 endif()
 
 if( EXIV2_BUILD_FUZZ_TESTS )
   add_subdirectory ( fuzz )
+  set(EXIV2_ENABLE_FILESYSTEM_ACCESS ON)
 endif()
 
 if(EXIV2_BUILD_EXIV2_COMMAND)
   add_subdirectory ( app )
+  set(EXIV2_ENABLE_FILESYSTEM_ACCESS ON)
 
 if( EXIV2_BUILD_SAMPLES )
     add_subdirectory( samples )
+    set(EXIV2_ENABLE_FILESYSTEM_ACCESS ON)
     get_directory_property(SAMPLES DIRECTORY samples DEFINITION APPLICATIONS)
 
     if (Python3_Interpreter_FOUND)

@@ -2,7 +2,7 @@ if (CONAN_AUTO_INSTALL)
     # Download automatically the cmake-conan integration file
     if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
         message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-        file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/master/conan.cmake"
+        file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/develop/conan.cmake"
                       "${CMAKE_BINARY_DIR}/conan.cmake"
                       TLS_VERIFY ON)
     endif()
@@ -35,7 +35,9 @@ if (NOT Python3_Interpreter_FOUND)
     message(WARNING "Python3 was not found. Python tests under the 'tests' folder will not be executed")
 endif()
 
-find_package(Filesystem COMPONENTS Experimental Final REQUIRED)
+if(EXIV2_ENABLE_FILESYSTEM_ACCESS)
+  find_package(Filesystem COMPONENTS Experimental Final REQUIRED)
+endif()
 
 # don't use Frameworks on the Mac (#966)
 if (APPLE)

@@ -2794,6 +2794,8 @@ std::ostream& Nikon3MakerNote::printLensId(std::ostream& os, const Value& value,
        "AF 18-270mm F/3.5-6.3 Di II VC PZD"},
       {0xE0, 0x40, 0x2D, 0x98, 0x2C, 0x41, 0xDF, 0x4E, 0x01, 0x00, 0x00, "Tamron", "B028",
        "18-400mm F/3.5-6.3 Di II VC HLD"},
+      {0xE0, 0x40, 0x2D, 0x98, 0x2C, 0x41, 0xDF, 0x0E, 0x01, 0x00, 0x00, "Tamron", "B028",
+       "18-400mm F/3.5-6.3 Di II VC HLD"},
       {0x07, 0x40, 0x2F, 0x44, 0x2C, 0x34, 0x03, 0x02, 0x00, 0x00, 0x00, "Tamron", "A10", "AF 19-35mm F/3.5-4.5"},
       {0x07, 0x40, 0x30, 0x45, 0x2D, 0x35, 0x03, 0x02, 0x00, 0x00, 0x00, "Tamron", "A10", "AF 19-35mm F/3.5-4.5"},
       {0x00, 0x49, 0x30, 0x48, 0x22, 0x2B, 0x00, 0x02, 0x00, 0x00, 0x00, "Tamron", "166D", "SP AF 20-40mm F/2.7-3.5"},
@@ -3836,7 +3838,7 @@ std::ostream& Nikon3MakerNote::printLensId4ZMount(std::ostream& os, const Value&
     return os << "(" << value << ")";
   }
 
-  // cf. https://github.com/exiftool/exiftool/blob/13.16/lib/Image/ExifTool/Nikon.pm#L5668
+  // cf. https://github.com/exiftool/exiftool/blob/13.44/lib/Image/ExifTool/Nikon.pm#L5816
   static constexpr struct lens {
     uint16_t l;
     const char* vendor;
@@ -3882,8 +3884,12 @@ std::ostream& Nikon3MakerNote::printLensId4ZMount(std::ostream& os, const Value&
       {47, "Nikon", "Nikkor Z 35mm f/1.2 S"},
       {48, "Nikon", "Nikkor Z 28-400mm f/4-8 VR"},
       {49, "Nikon", "Nikkor Z 28-135mm f/4 PZ"},
+      {50, "Nikon", "Nikkor Z 24-70mm f/2.8 S II"},
       {51, "Nikon", "Nikkor Z 35mm f/1.4"},
       {52, "Nikon", "Nikkor Z 50mm f/1.4"},
+      {53, "Nikon", "Nikkor Z DX 16-50mm f/2.8 VR"},
+      {55, "Nikon", "Nikkor Z DX MC 35mm f/1.7"},
+      {57, "Nikon", "Nikkor Z 24-105mm f/4-7.1"},
       {2305, "Laowa", "FFII 10mm F2.8 C&D Dreamer"},
       {2820, "Viltrox", "AF 16mm F1.8"},
       {2822, "Viltrox", "AF 20mm F2.8"},

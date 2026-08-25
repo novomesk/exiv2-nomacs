@@ -1,7 +1,7 @@
 project(
   'exiv2',
   'cpp',
-  version: '0.28.7',
+  version: '0.28.8',
   meson_version: '>=0.54.1',
   default_options: ['warning_level=0', 'cpp_std=c++17'],
 )
@@ -53,6 +53,8 @@ cdata.set('EXV_ENABLE_VIDEO', get_option('video'))
 deps = []
 deps += cpp.find_library('ws2_32', required: host_machine.system() == 'windows')
 deps += cpp.find_library('procstat', required: host_machine.system() == 'freebsd')
+deps += cpp.find_library('socket', required: host_machine.system() == 'sunos')
+deps += cpp.find_library('nsl', required: host_machine.system() == 'sunos')
 
 if cpp.get_argument_syntax() == 'gcc' and cpp.version().version_compare('<9')
   if host_machine.system() == 'linux' and cpp.get_define('_LIBCPP_VERSION', prefix: '#include <new>') == ''

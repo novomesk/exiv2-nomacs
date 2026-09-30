@@ -1123,7 +1123,7 @@ void TiffReader::visitDirectory(TiffDirectory* object) {
 #endif
     }
     if (tc) {
-      if (baseOffset() + next > size_) {
+      if (next > size_ || baseOffset() > size_ - next) {
 #ifndef SUPPRESS_WARNINGS
         EXV_ERROR << "Directory " << groupName(object->group()) << ": Next pointer is out of bounds; ignored.\n";
 #endif
@@ -1146,7 +1146,7 @@ void TiffReader::visitSubIfd(TiffSubIfd* object) {
       maxi = 1;
     for (uint32_t i = 0; i < object->count(); ++i) {
       uint32_t offset = getULong(object->pData() + 4 * i, byteOrder());
-      if (baseOffset() + offset > size_) {
+      if (offset > size_ || baseOffset() > size_ - offset) {
 #ifndef SUPPRESS_WARNINGS
         EXV_ERROR << "Directory " << groupName(object->group()) << ", entry 0x" << std::setw(4) << std::setfill('0')
                   << std::hex << object->tag() << " Sub-IFD pointer " << i << " is out of bounds; ignoring it.\n";
@@ -1210,10 +1210,15 @@ void TiffReader::visitIfdMakernote(TiffIfdMakernote* object) {
     return;
   }
 
-  object->ifd_.setStart(object->start() + object->ifdOffset());
+  auto start = object->start();
+  auto offset = object->ifdOffset();
+  enforce(pData_ <= start, ErrorCode::kerCorruptedMetadata);
+  enforce(start <= pLast_, ErrorCode::kerCorruptedMetadata);
+  enforce(offset <= static_cast<size_t>(pLast_ - start), ErrorCode::kerCorruptedMetadata);
+  object->ifd_.setStart(start + offset);
 
   // Modify reader for Makernote peculiarities, byte order and offset
-  object->mnOffset_ = object->start() - pData_;
+  object->mnOffset_ = start - pData_;
   auto state = TiffRwState{object->byteOrder(), object->baseOffset()};
   setMnState(&state);
 

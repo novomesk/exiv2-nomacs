@@ -206,22 +206,22 @@ std::ostream& StringValueBase::write(std::ostream& os) const {
 
 int64_t StringValueBase::toInt64(size_t n) const {
   ok_ = true;
-  return value_.at(n);
+  return static_cast<signed char>(value_.at(n));
 }
 
 uint32_t StringValueBase::toUint32(size_t n) const {
   ok_ = true;
-  return value_.at(n);
+  return static_cast<unsigned char>(value_.at(n));
 }
 
 float StringValueBase::toFloat(size_t n) const {
   ok_ = true;
-  return value_.at(n);
+  return static_cast<signed char>(value_.at(n));
 }
 
 Rational StringValueBase::toRational(size_t n) const {
   ok_ = true;
-  return {value_.at(n), 1};
+  return {static_cast<signed char>(value_.at(n)), 1};
 }
 
 StringValue::StringValue() : StringValueBase(string) {
@@ -926,57 +926,67 @@ int TimeValue::read(const std::string& buf) {
     spos = 4;
   }
 
-  auto hi = std::stoi(buf.substr(0, 2));
-  if (hi < 0 || hi > 23)
-    return printWarning();
-  time_.hour = hi;
-  if (buf.size() > 3) {
-    auto mi = std::stoi(buf.substr(mpos, 2));
-    if (mi < 0 || mi > 59)
+  try {
+    auto hi = std::stoi(buf.substr(0, 2));
+    if (hi < 0 || hi > 23)
       return printWarning();
-    time_.minute = std::stoi(buf.substr(mpos, 2));
-  } else {
-    time_.minute = 0;
-  }
-  if (buf.size() > 5) {
-    auto si = std::stoi(buf.substr(spos, 2));
-    if (si < 0 || si > 60)
-      return printWarning();
-    time_.second = std::stoi(buf.substr(spos, 2));
-  } else {
-    time_.second = 0;
-  }
-
-  auto fpos = buf.find('+');
-  if (fpos == std::string::npos)
-    fpos = buf.find('-');
-
-  if (fpos != std::string::npos) {
-    auto format = buf.substr(fpos, buf.size());
-    auto posColon = format.find(':');
-    if (posColon == std::string::npos) {
-      // Extended format
-      auto tzhi = std::stoi(format.substr(0, 3));
-      if (tzhi < -23 || tzhi > 23)
+    time_.hour = hi;
+    if (buf.size() > 3) {
+      auto mi = std::stoi(buf.substr(mpos, 2));
+      if (mi < 0 || mi > 59)
         return printWarning();
-      time_.tzHour = tzhi;
-      if (format.size() > 3) {
-        int minute = std::stoi(format.substr(3));
+      time_.minute = std::stoi(buf.substr(mpos, 2));
+    } else {
+      time_.minute = 0;
+    }
+    if (buf.size() > 5) {
+      auto si = std::stoi(buf.substr(spos, 2));
+      if (si < 0 || si > 60)
+        return printWarning();
+      time_.second = std::stoi(buf.substr(spos, 2));
+    } else {
+      time_.second = 0;
+    }
+
+    auto fpos = buf.find('+');
+    if (fpos == std::string::npos)
+      fpos = buf.find('-');
+
+    if (fpos != std::string::npos) {
+      auto format = buf.substr(fpos, buf.size());
+      // Use the sign of the raw offset string rather than of the parsed
+      // tzHour: when the hour magnitude is 0 (e.g. "-00:30"), std::stoi
+      // returns 0, which loses the '-' sign that std::stoi("-00") cannot
+      // preserve. format always starts with '+' or '-' (see fpos above).
+      const bool negative = format.at(0) == '-';
+      auto posColon = format.find(':');
+      if (posColon == std::string::npos) {
+        // Extended format
+        auto tzhi = std::stoi(format.substr(0, 3));
+        if (tzhi < -23 || tzhi > 23)
+          return printWarning();
+        time_.tzHour = tzhi;
+        if (format.size() > 3) {
+          int minute = std::stoi(format.substr(3));
+          if (minute < 0 || minute > 59)
+            return printWarning();
+          time_.tzMinute = negative ? -minute : minute;
+        }
+      } else {
+        // Basic format
+        auto tzhi = std::stoi(format.substr(0, posColon));
+        if (tzhi < -23 || tzhi > 23)
+          return printWarning();
+        time_.tzHour = tzhi;
+        int minute = std::stoi(format.substr(posColon + 1));
         if (minute < 0 || minute > 59)
           return printWarning();
-        time_.tzMinute = time_.tzHour < 0 ? -minute : minute;
+        time_.tzMinute = negative ? -minute : minute;
       }
-    } else {
-      // Basic format
-      auto tzhi = std::stoi(format.substr(0, posColon));
-      if (tzhi < -23 || tzhi > 23)
-        return printWarning();
-      time_.tzHour = tzhi;
-      int minute = std::stoi(format.substr(posColon + 1));
-      if (minute < 0 || minute > 59)
-        return printWarning();
-      time_.tzMinute = time_.tzHour < 0 ? -minute : minute;
     }
+  } catch (std::exception&) {
+    // std::stoi might throw an exception if the syntax is invalid.
+    return printWarning();
   }
   return 0;
 }

@@ -2009,6 +2009,7 @@ constexpr TagDetails canonCsLensType[] = {
     {61182, "Canon RF 24mm F1.4 L VCM"},
     {61182, "Canon RF 20mm F1.4 L VCM"},
     {61182, "Canon RF 85mm F1.4 L VCM"},
+    {61182, "Canon RF 20-50mm F4 L IS USM PZ"},
     {61182, "Canon RF 45mm F1.2 STM"},
     {61182, "Canon RF 7-14mm F2.8-3.5 L Fisheye STM"},
     {61182, "Canon RF 14mm F1.4 L VCM"},
@@ -2380,8 +2381,15 @@ constexpr TagDetails canonFilterEffect[] = {
 constexpr TagDetails canonToningEffect[] = {
     {0, N_("None")}, {1, N_("Sepia")}, {2, N_("Blue")}, {3, N_("Purple")}, {4, N_("Green")}};
 
+//! ShutterMode, tag 0x0017
+constexpr TagDetails canonShutterMode[] = {
+    {0, N_("Mechanical")},
+    {1, N_("Electronic First Curtain")},
+    {2, N_("Electronic")},
+};
+
 //! RFLensType, tag 0x003D
-// from https://github.com/exiftool/exiftool/blob/13.50/lib/Image/ExifTool/Canon.pm#L7009
+// from https://github.com/exiftool/exiftool/blob/13.59/lib/Image/ExifTool/Canon.pm#L7060
 constexpr TagDetails canonRFLensType[] = {
     {0, N_("n/a")},
     {257, "Canon RF 50mm F1.2 L USM"},
@@ -2455,6 +2463,7 @@ constexpr TagDetails canonRFLensType[] = {
     {326, "Canon RF 24mm F1.4 L VCM"},
     {327, "Canon RF 20mm F1.4 L VCM"},
     {328, "Canon RF 85mm F1.4 L VCM"},
+    {329, "Canon RF 20-50mm F4 L IS USM PZ"},
     {330, "Canon RF 45mm F1.2 STM"},
     {331, "Canon RF 7-14mm F2.8-3.5 L Fisheye STM"},
     {332, "Canon RF 14mm F1.4 L VCM"},
@@ -2494,8 +2503,12 @@ constexpr TagInfo CanonMakerNote::tagInfoFi_[] = {
      SectionId::makerTags, unsignedShort, 1, printFiFocusDistance},
     {0x0015, "FocusDistanceLower", N_("Focus Distance Lower"), N_("Focus Distance Lower"), IfdId::canonFiId,
      SectionId::makerTags, unsignedShort, 1, printFiFocusDistance},
+    {0x0017, "ShutterMode", N_("Shutter Mode"), N_("Shutter mode"), IfdId::canonFiId, SectionId::makerTags, signedShort,
+     1, EXV_PRINT_TAG(canonShutterMode)},
     {0x0019, "FlashExposureLock", N_("Flash Exposure Lock"), N_("Flash exposure lock"), IfdId::canonFiId,
      SectionId::makerTags, signedShort, 1, EXV_PRINT_TAG(canonOffOn)},
+    {0x0020, "AntiFlicker", N_("Anti-Flicker"), N_("Anti-flicker"), IfdId::canonFiId, SectionId::makerTags, signedShort,
+     1, EXV_PRINT_TAG(canonOffOn)},
     {0x003D, "RFLensType", N_("RF Lens Type"), N_("RF Lens Type"), IfdId::canonFiId, SectionId::makerTags,
      unsignedShort, 1, EXV_PRINT_TAG(canonRFLensType)},
     // End of list marker
@@ -2679,11 +2692,16 @@ std::ostream& CanonMakerNote::print0x0008(std::ostream& os, const Value& value, 
 }
 
 std::ostream& CanonMakerNote::print0x000a(std::ostream& os, const Value& value, const ExifData*) {
-  std::istringstream is(value.toString());
-  uint32_t l = 0;
-  is >> l;
-  return os << std::setw(4) << std::setfill('0') << std::hex << ((l & 0xffff0000) >> 16) << std::setw(5)
-            << std::setfill('0') << std::dec << (l & 0x0000ffff);
+  try {
+    std::istringstream is(value.toString());
+    uint32_t l = 0;
+    is.exceptions(std::istringstream::failbit);
+    is >> l;
+    return os << std::setw(4) << std::setfill('0') << std::hex << ((l & 0xffff0000) >> 16) << std::setw(5)
+              << std::setfill('0') << std::dec << (l & 0x0000ffff);
+  } catch (const std::system_error&) {
+    return os << value;
+  }
 }
 
 std::ostream& CanonMakerNote::print0x000c(std::ostream& os, const Value& value, const ExifData* exifData) {
@@ -2697,10 +2715,15 @@ std::ostream& CanonMakerNote::print0x000c(std::ostream& os, const Value& value, 
   auto pos = exifData->findKey(key);
   // if model is EOS D30
   if (pos != exifData->end() && pos->value().count() == 1 && pos->value().toInt64() == 0x01140000) {
-    uint32_t l = 0;
-    is >> l;
-    return os << std::setw(4) << std::setfill('0') << std::hex << ((l & 0xffff0000) >> 16) << std::setw(5)
-              << std::setfill('0') << std::dec << (l & 0x0000ffff);
+    try {
+      uint32_t l = 0;
+      is.exceptions(std::istringstream::failbit);
+      is >> l;
+      return os << std::setw(4) << std::setfill('0') << std::hex << ((l & 0xffff0000) >> 16) << std::setw(5)
+                << std::setfill('0') << std::dec << (l & 0x0000ffff);
+    } catch (const std::system_error&) {
+      return os << value;
+    }
   } else {
     return os << value;
   }

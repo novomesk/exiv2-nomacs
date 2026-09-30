@@ -113,6 +113,7 @@ def get_valid_files(data_dir):
         "issue_2339_poc.tiff",
         "issue_2352_poc.jpg",
         "issue_2385_poc.tiff",
+        "issue_ghsa_hxph_pv7w_8649_poc.crw",
         "issue_ghsa_crmj_qh74_2r36_poc.mov",
         "issue_ghsa_g9xm_7538_mq8w_poc.mov",
         "issue_ghsa_583f_w9pm_99r2_poc.jp2",
@@ -123,11 +124,14 @@ def get_valid_files(data_dir):
         "issue_ghsa_38h4_fx85_qcx7_poc.tiff",
         "issue_ghsa_496f_x7cq_cq39_poc.jpg",
         "issue_ghsa_9mxq_4j5g_5wrp.crw",
+        "issue_ghsa_fgw8_p7pr_37cp_poc.mov",
         "pocIssue283.jpg",
         "poc_1522.jp2",
         "xmpsdk.xmp",
         "issue_3513_poc.psd",
         "issue_3511_poc.eps",
+        "issue_3519_poc.xmp",
+        "issue_9324_poc.crw",
         # large file that creates 11Mb of output so let's exclude it
         "ReaganLargeTiff.tiff",
         # files that don't create any output
